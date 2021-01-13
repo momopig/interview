@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+  .link {
+    stroke: black;
+  }
+
+  .node {
+    stroke: white;
+    stroke-width: 3px;
+  }
+</style>
+
+<body>
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script charset="utf-8">
+
+    // 创建无向图
+    function createGraph(nodes, edges) {
+      let idMapNode = new Map()
+      for (let node of nodes) {
+        idMapNode.set(node.id, node)
+      }
+      for (let edge of edges) {
+        if (!idMapNode.get(edge.source).siblings) {
+          idMapNode.get(edge.source).siblings = []
+        }
+        if (!idMapNode.get(edge.target).siblings) {
+          idMapNode.get(edge.target).siblings = []
+        }
+        idMapNode.get(edge.source).siblings.push(idMapNode.get(edge.target))
+        idMapNode.get(edge.target).siblings.push(idMapNode.get(edge.source))
+      }
+      console.log(nodes)
+      debugger
+    }
+
+    // 深度-递归
+    function deepTrace(startNode) {
+      if (!startNode.visited) {
+        console.log(startNode.id)
+        startNode.visited = true
+      } else {
+        return
+      }
+      if (startNode.siblings) {
+        for (let sibling of startNode.siblings) {
+          deepTrace(sibling)
+        }
+      }
+    }
+
+    // 广度-非递归
+    function layerTrace(startNode) {
+      let queue = [startNode]
+      while (queue.length) {
+        let node = queue.shift()
+        debugger
+        if (!node.visited) {
+          node.visited = true
+          console.log(node.id)
+          if (node.siblings) {
+            queue = queue.concat(node.siblings)
+          }
+        }
+      }
+    }
+  </script>
+
+  <script>
+
+    var width = 960, height = 500, colors = d3.scale.category10();
+
+    var n = 4, // number of nodes
+      m = 6, // number of links
+      charge = -1000;
+
+    var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mousedown", create);
+
+    create();
+
+    function create() {
+      svg.selectAll(".link, .node").remove();
+      randomGraph(n, m, charge);
+    }
+
+    function randomGraph(n, m, charge) { //creates a random graph on n nodes and m links
+      var nodes = d3.range(n).map(index =>  ({id: index})),
+        list = randomChoose(unorderedPairs(d3.range(n)), m),
+        links = list.map(function (a) { return { source: a[0], target: a[1] } });
+        createGraph(nodes, links);
+      console.log('layer')
+      debugger
+      layerTrace(nodes[0])
+
+      var force = d3.layout.force()
+        .size([width, height])
+        .nodes(nodes)
+        .links(links)
+        .charge(charge)
+        .on("tick", tick)
+        .start();
+
+      var svgLinks = svg.selectAll(".link").data(links)
+        .enter().append("line")
+        .attr("class", "link");
+
+      var groupEnterSelection = svg.selectAll("g").data(nodes)
+        .enter().append("g")
+
+
+      var svgNodes = groupEnterSelection.append('circle')
+        .attr("class", "node")
+        .attr("r", 3)
+        .style("fill", "white")
+
+
+      /* Create the text for each block */
+      var svgTexts = groupEnterSelection.append("text")
+      .text(function(d) {
+          return d.id
+        }).attr('fill', 'black')
+
+
+      svgNodes.transition().duration(800)
+        .attr("r", function (d) { return 3 + 3 * d.weight })
+        .style("fill", function (d) { return colors(d.weight) });
+
+      svgLinks.transition().duration(800)
+        .style("stroke-width", 3);
+
+      function tick() {
+        svgTexts
+          .attr("text-anchor", "middle")
+          .attr("x", function (d) { return d.x })
+          .attr("y", function (d) { return d.y })
+          .attr("dy", function (d) { return '0.3em' });
+
+        svgNodes
+          .attr("cx", function (d) { return d.x })
+          .attr("cy", function (d) { return d.y });
+
+        svgLinks
+          .attr("x1", function (d) { return d.source.x })
+          .attr("y1", function (d) { return d.source.y })
+          .attr("x2", function (d) { return d.target.x })
+          .attr("y2", function (d) { return d.target.y });
+      }
+    }
+
+    function randomChoose(s, k) { // returns a random k element subset of s
+      var a = [], i = -1, j;
+      while (++i < k) {
+        j = Math.floor(Math.random() * s.length);
+        a.push(s.splice(j, 1)[0]);
+      };
+      return a;
+    }
+
+    function unorderedPairs(s) { // returns the list of all unordered pairs source s
+      var i = -1, a = [], j;
+      while (++i < s.length) {
+        j = i;
+        while (++j < s.length) a.push([s[i], s[j]])
+      };
+      return a;
+    }
+
+  </script>

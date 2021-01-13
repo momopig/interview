@@ -1,0 +1,31 @@
+<script type="text/javascript">
+  function isSame(num) {
+    let tempStr = String(num)
+    let startIndex = 0
+    let endIndex = tempStr.length - 1
+    while(endIndex !== startIndex && startIndex < endIndex) {
+      if(tempStr[startIndex] !== tempStr[endIndex]) {
+        return false
+      }
+      endIndex--
+      startIndex++
+    }
+    return true
+  }
+
+  function method1 (num) {
+    for(let i = 11; i <= num; i++) {
+      if (isSame(i)) {
+        console.log(i)
+      }
+    }
+  }
+  function method2(num) {
+    let result = [...Array(num).keys()].filter(item => item === Number(item.toString().split('').reverse().join('')))
+    console.log(result)
+    return result
+  }
+  // method1(100)
+
+  method2(100)
+</script>

@@ -1,0 +1,133 @@
+<script>
+  const deepClone_DFS = (value, map = new Map()) => {
+
+    let newValue
+    let type = Object.prototype.toString.call(value).slice(8, -1)
+    if (type === 'Object' || type === 'Array') {
+      if (map.has(value)) { // 有循环引用
+        newValue = map.get(value)
+      } else { // 无循环引用
+        if (type === 'Object') {
+          newValue = {}
+
+          // 对象的symbol类型属性单独处理
+          Object.getOwnPropertySymbols(value).forEach(symbol => newValue[symbol] = value[symbol])
+        } else {
+          newValue = []
+        }
+
+        // 此句一定要放在递归前
+        map.set(value, newValue)
+
+        // 对子属性或子元素进行递归遍历
+        for (let key in value) {
+          newValue[key] = deepClone_DFS(value[key], map)
+        }
+      }
+      return newValue
+    }
+    if (type === 'Function') {
+      newValue = eval(`(${value.toString()})`)
+      return newValue
+    }
+
+    // 基础类型的赋值
+    newValue = value
+    return newValue
+  }
+
+
+
+  const deepClone_BFS = (value, map = new Map()) => {
+    let stack = [value]
+    let type = Object.prototype.toString.call(value).slice(8, -1)
+    map.set(value, type === 'Object'? {} : [])
+
+    while (stack.length) {
+
+      // 在stack数组里面弹出的元素，就一定是对象或数组类型的数据
+      let oldValue = stack.shift()
+      let newValue = map.get(oldValue)
+      type = Object.prototype.toString.call(oldValue).slice(8, -1)
+
+      // 如果是Object类型，需要额外遍历Symbol属性
+      if (type === 'Object') {
+        Object.getOwnPropertySymbols(oldValue).forEach(symbol => {
+          newValue[symbol] = oldValue[symbol]
+        })
+      }
+      for (let key in oldValue) {
+        debugger
+        let sub = newValue[key] = oldValue[key]
+        let subType = Object.prototype.toString.call(sub).slice(8, -1)
+
+        if (subType === 'Object' || subType === 'Array') { // 对象的属性，如果是Object和Array，先为其创建值，但暂时不拷贝其子属性
+          if (!map.has(sub)) {
+            stack.push(sub)
+            map.set(sub, subType === 'Object' ? {} : [])
+          }
+          newValue[key] = map.get(sub)
+        } else if (subType === 'Function') {
+          newValue[key] = eval(`(${sub.toString()})`)
+        }
+      }
+    }
+    return map.get(value)
+  }
+  const deepClone_BFS2 = (value, map  = new Map()) => {
+    const stack = [value]
+    let returnValue
+    while (stack.length) {
+      let oldValue = stack.shift()
+      let type = Object.prototype.toString.call(oldValue).slice(8, -1)
+      let newValue = type === 'Object' ? {} : []
+      let parentConfig = map.get(oldValue)
+
+      // 处理与父对象的关系：新的拷贝对象，如果为属性（有父对象），则连接
+      if (parentConfig) {
+
+        // 将当前创建的新对象，作为属性，连接到他本该复制到的新对象
+        parentConfig[1][parentConfig[0]] = newValue
+      } else { // 只有输入的对象才没有父对象
+        returnValue = newValue
+      }
+
+      // 处理与symbol子属性的关系
+      if (type === 'Object') {
+        Object.getOwnPropertySymbols(oldValue).forEach(symbol => {
+          newValue[symbol] = oldValue[symbol]
+        })
+      }
+
+      // 处理与非symbol子属性的关系
+      for (let key in oldValue) {
+        let sub = newValue[key] = oldValue[key]
+        let subType = Object.prototype.toString.call(sub).slice(8, -1)
+        if (subType === 'Object' || subType === 'Array') {
+          if (!map.get(sub)) {
+            stack.push(sub)
+          }
+
+          // 用于当copy sub时，将新的copy值赋予newValue对象
+          map.set(sub, [key, newValue])
+        } else if (subType === 'Function') {
+          newValue[key] = eval(`(${oldValue.toString()})`)
+        }
+      }
+    }
+    return returnValue
+  }
+  const symbolAge = Symbol('age')
+  const child = { name: 'child' }
+  const parent = { name: 'parent', child, [symbolAge]: 12 }
+  child.parent = parent
+
+  // const newParent = deepClone_DFS(parent)
+  // const newParent = deepClone_BFS(parent)
+  const newParent = deepClone_BFS2(parent)
+  console.log(newParent)
+  console.log(newParent === newParent.child.parent) // false
+  console.log(parent === newParent) // false
+  console.log(parent.child === newParent.child) // false
+  console.log(newParent[symbolAge]) // 12
+</script>

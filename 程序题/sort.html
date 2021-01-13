@@ -1,0 +1,106 @@
+<script type="text/javascript">
+ const quick = (array, startIndex, endIndex) => {
+  if (startIndex < endIndex) {
+    let middleIndex = partition(array, startIndex, endIndex);
+    quick(array, startIndex, middleIndex - 1);
+    quick(array, middleIndex + 1, endIndex);
+  }
+
+};
+const insert = (array) => {
+  for (let i = 1; i < array.length; i++) {
+    // 腾挪出一个位置，让有序的数可以后移一位
+    let newOne = array[i];
+    let j = i - 1;
+
+    // newOne与array[j]的比较如果取等号，算法就会不稳定
+    while (newOne < array[j] && j >= 0) {
+      array[j + 1] = array[j];
+      j--;
+    }
+
+    // 遇到一个异常数，则退出循环，newOne确认的最终位置为异常数的后一位，即j + 1位
+    array[j + 1] = newOne;
+  }
+};
+const combine = (array, start, mid, end) => {
+  let i = start
+  let j = mid + 1
+  const result = [];
+
+  // 归并左半部分和右半部分
+  while(i <= mid && j <= end) {
+    if (array[i] < array[j]) {
+      result.push(array[i++])
+    } else {
+      result.push(array[j++])
+    }
+  }
+
+  // 如果左半较长，则将左半剩余部分加入到temp
+  while(i <= mid) {
+    result.push(array[i++])
+  }
+
+  // 如果右半较长，则将右半剩余部分加入到temp
+  while(j <= end) {
+    result.push(array[j++])
+  }
+
+  // 完成合并后，将合并后的result替换array（从start到end位）
+  array.splice(start, end - start + 1, ...result)
+}
+const merge = (array, start, end) => {
+  if (start < end) {
+    const mid = parseInt((start + end) / 2)
+    merge(array, start, mid)
+    merge(array, mid + 1, end)
+    combine(array, start, mid, end)
+  }
+}
+
+const partition = (array, startIndex, endIndex) => {
+  const pivot = array[startIndex];
+
+  // 初始化时，如果startIndex 等于 endIndex，表示只有一个元素
+  while(startIndex < endIndex) {
+    while(pivot <= array[endIndex] && startIndex < endIndex) {
+      endIndex--;
+    }
+    if (startIndex  < endIndex) {
+      array[startIndex] = array[endIndex];
+      startIndex++;
+    }
+    while(array[startIndex] <= pivot && startIndex < endIndex) {
+      startIndex++;
+    }
+    if (startIndex < endIndex) {
+      array[endIndex] = array[startIndex];
+      endIndex--;
+    }
+  }
+
+  // 此时startIndex等于endIndex
+  array[endIndex] = pivot;
+  return endIndex;
+};
+const swap = (array, from, to) => {
+  let temp = array[from];
+  array[from] = array[to];
+  array[to] = temp;
+};
+
+const testQuick = [11, 32, 3, 6, 8];
+debugger
+// quick(testQuick, 0, testQuick.length - 1);
+console.log(`testQuick: ${testQuick}`);
+debugger
+
+const testInsert = [1, 11, 32, 3, 6, 8];
+insert(testInsert);
+console.log(`testInsert: ${testInsert}`);
+
+const testMerge = [1, 11, 32, 3, 6, 8];
+merge(testMerge, 0, testMerge.length - 1);
+console.log(`testMerge: ${testMerge}`);
+  </script>
