@@ -1,4 +1,27 @@
 // 覆盖默认的All
+/**
+ * @desc 模仿原生，数组中报错，则返回错误结果
+ *
+ */
+Promise.all = promises => {
+  const results = []
+  return new Promise((reslove, reject) => {
+    promises.forEach((promise, index) => {
+      promise.then(value => {
+        results.splice(index, 0, value)
+        if (results.length === promises.length) {
+          reslove(results)
+        }
+      }, error => {
+        reject(error)
+      })
+    })
+  })
+}
+
+/**
+ * @desc 等到所有结果返回，错误也当成一个结果返回
+ */
 Promise.all = promises => {
   const results = []
   return new Promise((reslove, reject) => {
@@ -16,6 +39,7 @@ Promise.all = promises => {
     })
   })
 }
+
 const p1 = new Promise(reslove => {
   setTimeout(() => {
     reslove(1)

@@ -8,7 +8,7 @@ var obj = {
   }
 }
 debugger
-obj.doSomethingLater(); // console prints "NaN", because the property "count" is not in the window scope.
+obj.doSomethingLater(); // "NaN", because the property "count" is not in the window scope.
 
 var obj = {
   count : 10,
@@ -19,5 +19,4 @@ var obj = {
       }, 300);
   }
 }
-console.log('sds')
-obj.doSomethingLater();
+obj.doSomethingLater(); // 11, 箭头函数的this为方法执行时的this，即obj

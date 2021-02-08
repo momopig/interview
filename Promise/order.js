@@ -1,3 +1,4 @@
+// 执行顺序题
 const promise = new Promise((resolve, reject) => {
   console.log(1)
   resolve()

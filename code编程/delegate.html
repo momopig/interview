@@ -1,0 +1,84 @@
+<html>
+  <style>
+    .outer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: red;
+      width: 100px;
+      height: 100px;
+    }
+    .inner {
+      background: yellow;
+      width: 50px;
+      height: 50px;
+    }
+  </style>
+  <body class="abc cde">
+        <div class="outer">
+          <div class="inner"></div>
+        </div>
+      <script>
+        // 3. 实现一个 DOM 事件代理方法 delegate，接收一个 dom 元素，有两个方法，分别是添加 on 和 off
+      // // 例如
+      // delegate(parentElement).on('.childClassname', 'click', callback);
+      // delegate(parentElement).off('.childClassname', 'click', callback);
+
+      let Fn = function(ele) {
+        this.ele = ele
+        this.events = new Map() // {'click': [handler1, handler2, handler3, ...]}
+      }
+      Fn.prototype.on = function(type, selection, data, handler) {
+        const that = this
+        if (that.events.get(type)) {
+          that.events.get(type).push(handler)
+        } else {
+          that.events.set(type, [handler])
+        }
+
+        // 动态新增handler
+        that.ele.addEventListener(type, function(event) {
+          let target = event.target
+          let matchTarget = target.closest(selection)
+          if (!matchTarget) return
+
+          if (!that.ele.contains(matchTarget)) return
+          if (that.events.get(type) && that.events.get(type).includes(handler)) {
+            let newEvent = new Event(type)
+            newEvent.data = data
+
+            // 不distpach, newEvent.target的值为null，相当于设置.target
+            matchTarget.dispatchEvent(newEvent)
+
+            // 匹配的target，dispatchEvent不会触发handler的执行，需要手动触发执行
+            handler.call(matchTarget, newEvent)
+          }
+        })
+        return this
+      }
+      Fn.prototype.off = function(type, handler) {
+        if (this.events.get(type)) {
+          let index = this.events.get(type).indexOf(handler)
+          if (index !== -1) {
+            this.events.get(type).splice(index, 1)
+          }
+        }
+        return this
+      }
+
+      const delegate = (ele) => {
+        const fn = new Fn(ele)
+        return fn
+      }
+      let bodyDom = document.querySelector('body')
+      debugger
+      const handler1 = function (event) {
+        debugger
+        console.log(event.target)
+      }
+      let $bodyDom = delegate(bodyDom)
+      $bodyDom.on('click', '.outer', {value: 1}, handler1)
+      // $bodyDom.off('click', handler1)
+    </script>
+  </body>
+</html>

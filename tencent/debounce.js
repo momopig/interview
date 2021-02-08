@@ -22,4 +22,3 @@ const debounceFn = debounce((number) => {
   consolelog(number)
 }, 2000, true)
 
-se

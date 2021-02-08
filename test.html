@@ -1,40 +1,16 @@
 <script>
-  const getAZ = () => {
-    var arr = [];
-    debugger
-    for(var i = 65; i < 91; i++){
-        arr.push(String.fromCharCode(i));
+  var name = 'global'
+  debugger
+  var a = {
+    name: 'a',
+    b: function () {
+      var name = 'b'
+      const c = function() {
+        debugger
+        console.log(this.name)
+      }
+      c()
     }
-    return arr
   }
-  const chars = getAZ()
-
-  const getDepth = number => {
-    let depth = 1
-    while(number > Math.pow(26, depth)) {
-      depth++
-    }
-    return depth
-  }
-  const getIndex = (number, depth) => {
-    while(depth > 1) {
-      number -= Math.pow(26, depth - 1)
-      depth--
-    }
-    return number
-  }
-
-  const getColumn = num => {
-    let result = []
-    let depth = getDepth(num)
-    let index = getIndex(num, depth)
-    while(depth !== 0) {
-      result.unshift(chars[((index % 26) - 1 + 26) % 26])
-      index = Math.ceil(index / 26)
-      depth--
-    }
-    return result.join('')
-  }
-  console.log(getColumn(28))
-
+  a.b()
 </script>

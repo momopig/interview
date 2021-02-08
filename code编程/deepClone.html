@@ -126,7 +126,7 @@
   // const newParent = deepClone_BFS(parent)
   const newParent = deepClone_BFS2(parent)
   console.log(newParent)
-  console.log(newParent === newParent.child.parent) // false
+  console.log(newParent === newParent.child.parent) // true
   console.log(parent === newParent) // false
   console.log(parent.child === newParent.child) // false
   console.log(newParent[symbolAge]) // 12

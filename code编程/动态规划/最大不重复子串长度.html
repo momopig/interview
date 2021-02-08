@@ -1,0 +1,90 @@
+<script>
+  const str1 = 'abcdefg'
+  const str2 = 'abcabcd'
+  const str3 = 'ababcde'
+  const str4 = 'abcdeab'
+  const maxLength3 = str => {
+    const result = [1]
+    let max = 1
+    let set = new Set()
+    for (let i = 1; i < str.length; i++) {
+      set.clear()
+      let j = i
+
+      // [j + 1, i]表示不重复的序列
+      while(j !== -1 && !set.has(str[j])) {
+        set.add(str[j])
+        j--
+      }
+
+      let lastLength =  i - (j + 1) + 1
+      if (lastLength > result[i - 1]) {
+        result[i] = lastLength
+      } else {
+        result[i] = result[i - 1]
+      }
+      if (result[i] > max) {
+        max = result[i]
+      }
+    }
+    console.log(max)
+    return max
+  }
+
+  const maxLength1 = str => {
+    debugger
+    let max = 1
+
+    // dp数组其实没卵用，不需要在maxLength1也不影响
+    const dp = [1]
+    let set = new Set()
+    for(let i = 1; i < str.length; i++) {
+      let j = i
+      set.clear()
+      while(j !== -1 && !set.has(str[j])) {
+        set.add(str[j])
+        j--
+      }
+      dp[i] = i - (j + 1) + 1
+      if (dp[i] > max) {
+        max = dp[i]
+      }
+    }
+    console.log(max)
+    return max
+  }
+
+  /**
+   * @desc
+   *
+  */
+  const maxLength2 = str => {
+    let max = 1
+
+    // dp[i]表示以i结尾的最长不重复子串
+    const dp = [str.slice(0, 1)]
+    for(let i = 1; i < str.length; i++) {
+      let sameIndex = dp[i - 1].indexOf(str[i])
+      if (sameIndex === -1) {
+        dp[i] = dp[i - 1] + str[i]
+      } else {
+        dp[i] = dp[i - 1].slice(sameIndex + 1) + str[i]
+      }
+      if (dp[i].length > max) {
+        max = dp[i].length
+      }
+    }
+    console.log(max)
+    return max
+  }
+
+  maxLength1(str1) // 7
+  maxLength1(str2) // 4
+  maxLength1(str3) // 5
+  maxLength1(str4) // 5
+
+  maxLength2(str1) // 7
+  maxLength2(str2) // 4
+  maxLength2(str3) // 5
+  maxLength2(str4) // 5
+</script>

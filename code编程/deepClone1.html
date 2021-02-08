@@ -1,0 +1,53 @@
+<script>
+const deepClone = (value, weakMap = new WeakMap()) => {
+  let newValue
+  let type = Object.prototype.toString.call(value).slice(8, -1)
+
+  if (typeof value === 'object' && value !== null) { // 引用类型
+    let reference = weakMap.get(value)
+
+    if (reference) { // 引用已存在
+      newValue = reference
+    } else {  // 引用不存在
+      if (type !== 'Object' && type !== 'Array') {  // native object: 基础类型的包装类型(String、Number、Boolean)、Date、RegExp
+        newValue = new value.constructor(value)
+        weakMap.set(value, newValue)
+      } else { // Object、Array
+        if (type === 'Object') {
+          newValue = {}
+        } else {
+          newValue = []
+        }
+        weakMap.set(value, newValue)
+        const keys = [...Object.keys(value), ...Object.getOwnPropertySymbols(value)]
+        keys.forEach(key => newValue[key] = deepClone(value[key], weakMap))
+      }
+    }
+  } else if (typeof value === 'function') {
+    newValue = eval(value.toString())
+
+  } else { // 非引用类型的基础类型: number/string/boolean/null/undefined/bigint/symbol
+    newValue = value
+  }
+  return newValue
+}
+
+const symbolAge = Symbol('age')
+  const child = { name: 'child' }
+  const parent = {
+    name: 'parent',
+    child, [symbolAge]: 12,
+    date: new Date(),
+    test: null
+  }
+  child.parent = parent
+
+  // const newParent = deepClone_DFS(parent)
+  // const newParent = deepClone_BFS(parent)
+  const newParent = deepClone(parent)
+  console.log(newParent)
+  console.log(newParent === newParent.child.parent) // true
+  console.log(parent === newParent) // false
+  console.log(parent.child === newParent.child) // false
+  console.log(newParent[symbolAge]) // 12
+</script>
