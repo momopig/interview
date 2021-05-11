@@ -6,7 +6,7 @@
 Promise.all = promises => {
   const results = []
   return new Promise((reslove, reject) => {
-    promises.forEach((promise, index) => {
+    promises.forEach((promise, index) =>
       promise.then(value => {
         results.splice(index, 0, value)
         if (results.length === promises.length) {

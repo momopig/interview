@@ -1,0 +1,34 @@
+
+<script>
+  /**
+   * 题目：强盗抢劫一排房间，每个房间都有钱，不能抢劫两个相邻的房间，要求抢的钱最多。数组如：[2,7,9,3,1]
+   *
+   *
+   *
+   * 解题思路:
+   * 1. 设dp[i]为抢劫到第i个房间的最大钱数总和
+   * 2. 设nums[i]表示第i个房间包含的钱数
+   * 2. 递推公式：dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
+   * 4.边界值：dp[0]为nums[0], dp[1]为max(nums[0], nums[1])
+   *
+   * @leetcode: https://leetcode-cn.com/problems/house-robber/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+   */
+
+
+  /**
+   * @param {Array<number>} nums
+   */
+   var hiJack = function(nums) {
+    const max = (v1, v2) => v1 > v2 ? v1 : v2
+    const dp = [nums[0], max(nums[0], nums[1])]
+    const l = nums.length
+    for(let i = 2; i < l; i++) {
+      dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
+    }
+    return dp[l - 1]
+  };
+
+  console.log(hiJack([2, 7, 9, 3, 1])) // 12
+  console.log(hiJack([8, 2, 3, 4])) // 12
+
+  </script>

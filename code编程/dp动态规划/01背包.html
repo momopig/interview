@@ -1,0 +1,37 @@
+<script>
+  const getMaxBagValue = (products, bagCapacity) => {
+    const dp = new Array(products.length)
+    for(let i = 0; i < products.length; i++) {
+      dp[i] = new Array(bagCapacity)
+      for (let j = 1; j <= bagCapacity; j++) {
+        let product = products[i]
+        if (product.weight > j) { // 如果没有放得进的可能
+          if (i === 0) { // 如果是第一个商品
+            dp[i][j] = 0
+          } else { // 如果不是第一个商品，最大价值就等于前i - 1个物品在容量j时的最大价值
+            dp[i][j] = dp[i - 1][j]
+          }
+        } else { // 如果放得进
+          if (i === 0) { // 如果是第一个商品
+            dp[i][j] = product.value
+            continue
+          } else {
+            dp[i][j] = dp[i - 1][j - product.weight] + product.value
+          }
+          dp[i][j] = dp[i - 1][j] > dp[i][j] ? dp[i - 1][j] : dp[i][j]
+        }
+      }
+    }
+    return dp[products.length - 1][bagCapacity]
+  }
+  const products = [
+    {weight: 3, value: 6},
+    {weight: 5, value: 4},
+    {weight: 2, value: 5},
+    {weight: 3, value: 5},
+    {weight: 2, value: 3},
+    {weight: 1, value: 10}
+  ]
+  const bagCapacity = 10
+  console.log(getMaxBagValue(products, bagCapacity))
+</script>

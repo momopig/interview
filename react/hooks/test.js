@@ -1,4 +1,3 @@
-<script>
 // Example 3
 const MyReact = (function() {
   let _val, _deps // hold our state and dependencies in scope
@@ -44,11 +43,8 @@ App = MyReact.render(Counter) // effect 0 // render {count: 0}
 App.click()
 App = MyReact.render(Counter) // effect 1 // render {count: 1}
 
-App.noop() // 依赖值count没有发生变化，useEffect的callback不会执行
+App.noop()
 App = MyReact.render(Counter) // no effect run // render {count: 1}
 
 App.click()
 App = MyReact.render(Counter) // effect 2 // render {count: 2}
-
-
-</script>

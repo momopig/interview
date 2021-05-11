@@ -1,0 +1,34 @@
+
+<script>
+/**
+ * 解题思路:
+ * 1. 设dp[i]为到达第i个台阶的走法和(其中i从1开始)
+ * 2. 递推公式：dp[i] = dp[i - 1] + dp[i - 2]
+ * 3. 初始化边界值：dp[1] = 1, dp[2] = 2, dp[3] = 3, dp[4] = 5
+ *
+ * @leetcode: https://leetcode-cn.com/problems/climbing-stairs/submissions/
+ */
+
+
+/**
+ * @param {number} level
+ * @return {number} 爬楼梯的走法
+ */
+ var climbStairs = function(level) {
+  const dp = [0, 1, 2]
+  for(i = 3; i <= level; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2]
+  }
+  return dp[level]
+};
+
+
+
+
+
+console.log(crumb(3))
+console.log(crumb(4))
+console.log(crumb(5))
+console.log(crumb(10))
+
+</script>

@@ -9,18 +9,6 @@
     return Array.from(set) // 或 return [...set]
   }
 
-  /**
-   * @desc 纯函数实现，只需一个空间，空间复杂度为O(n)
-  */
-  const fn_letOf = data => {
-    const newArr = []
-    for (let item of data) {
-      if (!newArr.includes(item)) {
-        newArr.push(item)
-      }
-    }
-    return newArr
-  }
   const fn_filter = data => {
 
     // 原理：如果有重复数，也只会返回第一个数
@@ -36,6 +24,22 @@
       return reducer
     }, [])
   }
+
+  /**
+   * @desc 纯函数实现，只需一个空间，空间复杂度为O(n)
+  */
+  const fn_letOf = data => {
+    const newArr = []
+    for (let item of data) {
+      if (!newArr.includes(item)) {
+        newArr.push(item)
+      }
+    }
+    return newArr
+  }
+
+
+
   /**
    * @desc 纯函数，多借用一个map空间
   */

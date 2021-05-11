@@ -7,6 +7,6 @@ const obj = {
   name: 'Jack'
 }
 function test() {
-  console.arguments(this.name)
+  console.log(this.name)
 }
-test.bind(obj)
+test.bind(obj)()

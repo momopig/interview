@@ -1,0 +1,27 @@
+<meta charset="UTF-8">
+<script type="text/javascript">
+	/*使用构造函数来创建闭包*/
+	var Student = function(){
+		var name = "John";
+		this.getName = function(){
+			return name;
+		}
+	}	
+	var stu_1 = new Student();
+	alert(stu_1.getName());
+	var stu_2 = new Student();
+	alert(stu_2.getName());
+	console.log(stu_2);
+
+	/*使用即时函数创建闭包*/
+	var stu_3 = (function(){
+		var name = "Marry";
+		/*即时函数返回一个对象,该对象拥有访问私有成员name的特权方法*/
+		return {
+			getName : function(){
+				return name;
+			}
+		};
+	}());
+	alert(stu_3.getName());
+</script>

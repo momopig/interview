@@ -39,17 +39,21 @@ const deepTrace = (tree) => {
   }
 };
 
+// 需要考虑循环引用的情况
 const layerTrace = (tree) => {
   let traceQueue = [tree];
 
   while (traceQueue.length) {
     let node = traceQueue.shift();
 
-    node.visited = true;
-    console.log(node.name);
+    if (!node.visited) {
+      node.visited = true;
+      console.log(node.name);
 
-    if (Array.isArray(node.children)) {
-      traceQueue = traceQueue.concat(node.children);
+      if (Array.isArray(node.children)) {
+        traceQueue = [...traceQueue, ...node.children]
+        // traceQueue = traceQueue.concat(node.children);
+      }
     }
   }
 };

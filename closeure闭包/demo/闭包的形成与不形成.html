@@ -1,0 +1,18 @@
+<script type="text/javascript">
+ 	function box(){
+		var age = 1;
+		return function(){
+		  age++;
+		  alert(age);
+
+		}
+	}
+
+	var b = box();
+	b();  //2
+        b();  //3
+        box()(); //2
+        box()(); //2	
+
+
+</script>

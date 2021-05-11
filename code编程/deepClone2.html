@@ -4,20 +4,20 @@ const deepClone = (value, weakMap = new WeakMap()) => {
   let type = Object.prototype.toString.call(value).slice(8, -1)
 
   if ((typeof value === 'object' || typeof value === 'function') && value !== null) { // 引用类型
-    let reference = weakMap.get(value)
+    let reference = weakMap.get(value) // 引用类型要判断是否有循环引用问题
 
     if (reference) { // 引用已存在
-      newValue = reference
+      return newValue = reference
     } else {  // 引用不存在
       if (type !== 'Object' && type !== 'Array' && type !== 'Function') {  // native object: 基础类型的包装类型(String、Number、Boolean)、Date、RegExp
         newValue = new value.constructor(value)
         weakMap.set(value, newValue)
-        return
+        return newValue
       }
       if (type === 'Function') {
         newValue = eval(value.toString())
         weakMap.set(value, newValue)
-        return
+        return newValue
       }
       if (type === 'Object' || type === 'Array') {
         if (type === 'Object') {
@@ -31,9 +31,8 @@ const deepClone = (value, weakMap = new WeakMap()) => {
       }
     }
   } else { // 非引用类型的基础类型: number/string/boolean/null/undefined/bigint/symbol
-    newValue = value
+    return newValue = value
   }
-  return newValue
 }
 
 const symbolAge = Symbol('age')

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<body>
+  <style>
+.button-wrapper {
+  width: 400px
+}
+.button {
+  position: relative;
+  background: grey;
+  height: 80px;
+  width: 100%;
+}
+:nth-child(1) {
+  background: red;
+}
+:first-child {
+  width: 100px;
+}
+.button:before {
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  background: white;
+  content: '';
+  width: 50px;
+  height: 50px;
+  transition: before 1s;
+}
+.button :first-child {
+  width: 100px;
+}
+.button:hover {
+  background: green;
+}
+.button:hover:before {
+  left: calc(100% - 60px);
+}
+  </style>
+  <div class="button-wrapper">
+    <div class="button">
+      <div class="test"></div>
+    </div>
+  </div>
+<body>
+</html>

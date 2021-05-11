@@ -2,12 +2,12 @@ var obj = {
   count : 10,
   doSomethingLater : function (){
       setTimeout(function(){ // the function executes on the window scope
-          this.count++;
+          this.count++; // undefined++只会得NaN
           console.log(this.count);
       }, 300);
   }
 }
-debugger
+
 obj.doSomethingLater(); // "NaN", because the property "count" is not in the window scope.
 
 var obj = {
